@@ -1,0 +1,19 @@
+---
+title: Clusters Beat Trend!? Testing Feature Hierarchy in Statistical Graphics
+author: Susan Vanderplas
+date: '2016-08-01'
+slug: clusters-trend-jsm2016
+all_day: true
+event: 'Joint Statistical Meetings, Chicago, IL'
+categories:
+  - Graphics
+tags:
+  - visual-inference
+  - graphics
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<iframe src="https://srvanderplas.github.io/Presentations/JSM2016/HierarchyOfVisualFeatures.html#/" height="600px" width = "100%"/>
+ 

@@ -1,0 +1,53 @@
+---
+title: Graphics, Visualization, and Design Background Reading
+author: Susan Vanderplas
+date: '2019-12-02'
+slug: []
+categories:
+  - Graphics
+  - R
+tags:
+  - graphics
+  - history
+  - illusions
+  - statistical-atlas
+  - visual-inference
+image:
+  caption: ''
+  focal_point: ''
+---
+
+I started assembling a running list of useful/interesting papers in response to an email and figured it made more sense to keep this in a place I might be able to find it again. Maybe.
+
+## My papers
+
+Some of the graphics related work I've done in the past. Going forward, I'm primarily interested in visual inference and graphical testing with the goal of formalizing (via experimentation) things that "everyone knows" about graphical design.
+
+- [A review paper on graphics and graphical testing](https://github.com/srvanderplas/AnnualReviewStatisticsVisualization/blob/master/Visualization.pdf) (this should come out in Annual Review soon)
+- [Applying graphics/design to old charts. User testing of charts from the statistical atlas, showing data from the 1870 census](https://www.tandfonline.com/doi/full/10.1080/10618600.2018.1562937) (or on [github](https://github.com/srvanderplas/Statistical_Atlas/blob/master/writeup/framedCharts.pdf))
+- [Visual inference with 2-target lineups - What statistical features are visible in data under different plot aesthetics?](https://www.tandfonline.com/doi/full/10.1080/10618600.2016.1209116)
+- [Optical Illusions and statistical graphics](https://www.tandfonline.com/doi/full/10.1080/10618600.2014.951547)
+
+## Other useful/interesting/important papers
+
+These are largely related in one way or another to the work I've done, and I've cited all of them at one point or another.
+
+- [Hadley Wickham's paper explaining the grammar of graphics as implemented in ggplot2](https://www.tandfonline.com/doi/abs/10.1198/jcgs.2009.07098)
+- [Cleveland and McGill's paper, which is one of the foundational "testing of graphics" papers](https://www.tandfonline.com/doi/pdf/10.1080/01621459.1984.10478080)
+- [A paper on the line width illusion in common-angle plots](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6634157) (this is a mechanism related to the sine illusion)
+- [A formal model for visual inference](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6327249)
+- [Visual inference + grammar of graphics is awesome](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6327249)
+
+In theory, I suppose I should put Tufte's books on this list, but I just can't make myself do it.
+
+## Non-academic books and other stuff
+
+- The Design of Everyday Things, by Donald Norman (the pdf seems to be easily available online)
+- Thing Explainer, by Randall Munroe    
+This one may require a bit of explanation - it's not specifically graphics or design focused, but the way the visualizations and diagrams are used is so integral to the explanations that it's a great representation of "just enough" detail without providing too much information that might be confusing.
+- The Man Who Mistook His Wife for a Hat, by Oliver Sacks    
+This is a really great book for highlighting ways the brain can "go wrong". While most of the perceptual issues we encounter aren't the result of the types of illness described in the book, there's a way of thinking about perception that is valuable that you can maybe pick up in part from the book. Also, it is a very interesting book in many ways, and has one of the best titles I've ever seen.
+
+## Miscellaneous
+
+I'm still looking for a good paper on the use of introspection in understanding perceptual processes. [This](https://plato.stanford.edu/entries/perception-problem/) looks like it may have a citation to something useful, but philosophy is a bit more than I'm willing to deal with today.

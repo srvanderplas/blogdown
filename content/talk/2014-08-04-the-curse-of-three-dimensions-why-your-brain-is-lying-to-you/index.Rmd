@@ -1,0 +1,21 @@
+---
+title: 'The Curse of Three Dimensions: Why Your Brain is Lying to You'
+author: Susan Vanderplas
+date: '2014-08-04'
+slug: sine-illusion-jsm2014
+all_day: true
+event: 'Joint Statistical Meetings, Boston, MA'
+categories:
+  - Graphics
+tags:
+  - graphics
+  - illusions
+  - user-study
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<iframe src="https://srvanderplas.github.io/Presentations/JSM2014/WhyYourBrainIsLyingToYou/JSM2014.html#/" height="600px" width = "100%"/>
+ 
+

@@ -1,0 +1,126 @@
+---
+title: Travis Tricks
+author: Susan Vanderplas
+date: '2019-05-07'
+slug: []
+categories:
+  - R
+tags:
+  - r-package
+  - useful-code
+  - note-to-self
+image:
+  caption: ''
+  focal_point: ''
+---
+
+There are certain situations that cause Travis to be a royal pain... obscure Ubuntu package dependencies, needing an X server... My goal with this post is to document them as they come up, because then I might be able to avoid looking through StackOverflow for obscure `.travis.yml` configuration issues. This is definitely not an exhaustive list - it's just some of the issues I've run across myself relatively recently, with a few extras that I've gleaned from looking at other packages `.travis.yml` files. 
+
+
+### X server dependency
+
+If you need to be able to launch a graphical window, say, for RGL, you'll need to somehow have a virtual X server set up for the headless travis environment. Enter XVFB. 
+
+It used to be that you needed to export the display, start xfvb, and then wait 3 seconds or something, but [Travis updated some things recently (January 2019) and now that doesn't work](https://benlimmer.com/2019/01/14/travis-ci-xvfb/). 
+
+Instead, the solution is to add these lines to the config file: 
+
+````
+addons:
+  apt:
+    update: true
+    packages:
+      - libglu1-mesa-dev # rgl
+      - freeglut3-dev 
+      - mesa-common-dev
+      
+services:
+  - xvfb
+````
+
+### ImageMagick
+
+ImageMagick can also cause some fun issues because of the ubuntu packages required. To get the updated ImageMagick libraries, you have to add a PPA as well as installing some dependent packages.
+
+````
+addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: 'ppa:opencpu/imagemagick'
+    packages:
+      - libjpeg-dev
+      - libpng-dev
+      - libgif-dev
+      - libmagick++-dev
+      - librsvg2-dev
+      - libwebp-dev
+      - libpoppler-cpp-dev
+      - libtesseract-dev
+      - libleptonica-dev
+      - tesseract-ocr-eng
+      - libtiff-dev
+````
+
+If you depend on the R package `magick`, you'll need to make sure ImageMagick is installed.
+
+
+### Package caching
+
+I haven't tested the following lines (from [ggplot2's travis file](https://github.com/tidyverse/ggplot2/blob/master/.travis.yml)) but it seems like you can use the `before_cache` directive to install packages from CRAN that will (I'm guessing) be cached and not have to be reinstalled every time?
+
+````
+before_cache:
+    - Rscript -e 'remotes::install_cran("pkgdown")'
+    - Rscript -e 'remotes::install_github("tidyverse/tidytemplate")'
+````
+
+### R packages from github
+
+````
+r_github_packages:
+  - jimhester/lintr
+  - r-lib/covr
+  - r-lib/pkgdown
+````
+
+### Curl
+
+````
+addons:
+  apt:
+    packages:
+    - libcurl4-openssl-dev
+````
+
+### Spatial packages
+
+````
+addons:
+  apt:
+    packages:
+      - libgdal-dev
+      - libproj-dev
+````
+
+Or, building both from source to get less outdated development libraries...
+
+````
+language: r
+sudo: required
+dist: trusty
+cache:
+  - ccache
+
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+    packages:
+      - libgdal-dev
+      - libproj-dev
+      - libgeos-dev
+      - libudunits2-dev
+      - libnetcdf-dev
+      - netcdf-bin
+````

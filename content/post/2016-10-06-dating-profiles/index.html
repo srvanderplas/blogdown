@@ -1,0 +1,31 @@
+---
+title: Dating Profiles
+author: Susan Vanderplas
+date: '2016-10-06'
+slug: dating-profiles
+categories:
+  - R
+tags:
+  - data
+  - graphics
+  - fun
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<script src="{{< relref "post/2016-10-06-dating-profiles/index.html" >}}index_files/header-attrs/header-attrs.js"></script>
+<link href="{{< relref "post/2016-10-06-dating-profiles/index.html" >}}index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="{{< relref "post/2016-10-06-dating-profiles/index.html" >}}index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="height-by-gender" class="section level1">
+<h1>Height by Gender</h1>
+<p>34456 unique profiles were collected from a dating site using a “decoy profile” of a dog who is interested in any type of relationship with just about anyone. Of those profiles, 19436 contained self-reported height. As women are on average shorter than men, the distributions for each gender are shown separately.</p>
+<p><img src="{{< relref "post/2016-10-06-dating-profiles/index.html" >}}index_files/figure-html/height-by-gender-1.png" width="768" /></p>
+<p>As people typically report height in feet and inches, at least in the US, using bins of 0.1 feet doesn’t quite work out as we’d hope. Switching to 1/12 of a foot, or every 1", seems like a more natural bin width.
+<img src="{{< relref "post/2016-10-06-dating-profiles/index.html" >}}index_files/figure-html/height-by-gender2-1.png" width="768" /></p>
+<p>Using bins of 1“, we can see a tendency that is particularly pronounced in men (but also present in women) to round to the nearest 6” - in men, this is most pronounced at 6’, and in women, at 5’4“. It also seems that there are fewer than expected women reporting heights of 6’1” - they either round down to 6’ or up to 6’2". Overall, the heights appear normally distributed, but these slight deviations are somewhat entertaining, even if we are not testing for statistical significance.</p>
+<p><img src="{{< relref "post/2016-10-06-dating-profiles/index.html" >}}index_files/figure-html/height-by-gender3-1.png" width="768" />
+Using a reasonable kernel, we see that rounding behavior is more pronounced in men than in women (though there are more men reporting a height at all, so that also plays into it).</p>
+</div>

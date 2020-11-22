@@ -1,0 +1,20 @@
+---
+title: Clusters Beat Trend?! Testing Feature HIerarchy in Statistical Graphics
+author: Susan Vanderplas
+date: '2018-05-17'
+all_day: true
+event: 'SDSS, Reston, VA'
+categories:
+  - Graphics
+tags:
+  - graphics
+  - user-study
+  - visual-inference
+slug: feature-hierarchy-sdss2018
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<iframe src="https://srvanderplas.github.io/Presentations/SDSS2018/FeatureHierarchy.html" height="600px" width = "100%"/>
+ 

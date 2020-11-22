@@ -1,0 +1,107 @@
+---
+title: Travis Tricks
+author: Susan Vanderplas
+date: '2019-05-07'
+slug: []
+categories:
+  - R
+tags:
+  - r-package
+  - useful-code
+  - note-to-self
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<script src="{{< relref "post/2019-05-07-travis-tricks/index.html" >}}index_files/header-attrs/header-attrs.js"></script>
+<link href="{{< relref "post/2019-05-07-travis-tricks/index.html" >}}index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="{{< relref "post/2019-05-07-travis-tricks/index.html" >}}index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<p>There are certain situations that cause Travis to be a royal pain… obscure Ubuntu package dependencies, needing an X server… My goal with this post is to document them as they come up, because then I might be able to avoid looking through StackOverflow for obscure <code>.travis.yml</code> configuration issues. This is definitely not an exhaustive list - it’s just some of the issues I’ve run across myself relatively recently, with a few extras that I’ve gleaned from looking at other packages <code>.travis.yml</code> files.</p>
+<div id="x-server-dependency" class="section level3">
+<h3>X server dependency</h3>
+<p>If you need to be able to launch a graphical window, say, for RGL, you’ll need to somehow have a virtual X server set up for the headless travis environment. Enter XVFB.</p>
+<p>It used to be that you needed to export the display, start xfvb, and then wait 3 seconds or something, but <a href="https://benlimmer.com/2019/01/14/travis-ci-xvfb/">Travis updated some things recently (January 2019) and now that doesn’t work</a>.</p>
+<p>Instead, the solution is to add these lines to the config file:</p>
+<pre><code>addons:
+  apt:
+    update: true
+    packages:
+      - libglu1-mesa-dev # rgl
+      - freeglut3-dev 
+      - mesa-common-dev
+      
+services:
+  - xvfb</code></pre>
+</div>
+<div id="imagemagick" class="section level3">
+<h3>ImageMagick</h3>
+<p>ImageMagick can also cause some fun issues because of the ubuntu packages required. To get the updated ImageMagick libraries, you have to add a PPA as well as installing some dependent packages.</p>
+<pre><code>addons:
+  apt:
+    update: true
+    sources:
+      - sourceline: &#39;ppa:opencpu/imagemagick&#39;
+    packages:
+      - libjpeg-dev
+      - libpng-dev
+      - libgif-dev
+      - libmagick++-dev
+      - librsvg2-dev
+      - libwebp-dev
+      - libpoppler-cpp-dev
+      - libtesseract-dev
+      - libleptonica-dev
+      - tesseract-ocr-eng
+      - libtiff-dev</code></pre>
+<p>If you depend on the R package <code>magick</code>, you’ll need to make sure ImageMagick is installed.</p>
+</div>
+<div id="package-caching" class="section level3">
+<h3>Package caching</h3>
+<p>I haven’t tested the following lines (from <a href="https://github.com/tidyverse/ggplot2/blob/master/.travis.yml">ggplot2’s travis file</a>) but it seems like you can use the <code>before_cache</code> directive to install packages from CRAN that will (I’m guessing) be cached and not have to be reinstalled every time?</p>
+<pre><code>before_cache:
+    - Rscript -e &#39;remotes::install_cran(&quot;pkgdown&quot;)&#39;
+    - Rscript -e &#39;remotes::install_github(&quot;tidyverse/tidytemplate&quot;)&#39;</code></pre>
+</div>
+<div id="r-packages-from-github" class="section level3">
+<h3>R packages from github</h3>
+<pre><code>r_github_packages:
+  - jimhester/lintr
+  - r-lib/covr
+  - r-lib/pkgdown</code></pre>
+</div>
+<div id="curl" class="section level3">
+<h3>Curl</h3>
+<pre><code>addons:
+  apt:
+    packages:
+    - libcurl4-openssl-dev</code></pre>
+</div>
+<div id="spatial-packages" class="section level3">
+<h3>Spatial packages</h3>
+<pre><code>addons:
+  apt:
+    packages:
+      - libgdal-dev
+      - libproj-dev</code></pre>
+<p>Or, building both from source to get less outdated development libraries…</p>
+<pre><code>language: r
+sudo: required
+dist: trusty
+cache:
+  - ccache
+
+addons:
+  apt:
+    sources:
+      - sourceline: &#39;ppa:ubuntugis/ubuntugis-unstable&#39;
+    packages:
+      - libgdal-dev
+      - libproj-dev
+      - libgeos-dev
+      - libudunits2-dev
+      - libnetcdf-dev
+      - netcdf-bin</code></pre>
+</div>

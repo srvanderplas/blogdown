@@ -1,0 +1,71 @@
+---
+title: Install Useful R Packages
+author: Susan Vanderplas
+date: '2016-04-11'
+slug: install-useful-r-packages
+categories:
+  - R
+tags:
+  - useful-code
+  - computer-setup
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<script src="{{< relref "post/2016-04-11-install-useful-r-packages/index.html" >}}index_files/header-attrs/header-attrs.js"></script>
+<link href="{{< relref "post/2016-04-11-install-useful-r-packages/index.html" >}}index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="{{< relref "post/2016-04-11-install-useful-r-packages/index.html" >}}index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<p>About once a semester, I end up having to install or reinstall R because of a software issue, OS upgrade, or some other calamity. It’s calmed down in the past year or two, but it used to be much more frequent. During grad school, I was screwing things up on such a regular basis that I could reinstall Ubuntu, get LaTeX and R installed, and repopulate all of the important programs I used faster than I could usually fix the issue I caused initially (and for the most part, I was doing this without docker or any of the convenient tools we have now for automatically setting up environments).</p>
+<p>For a week or two after a new installation, though, I’d be constantly having to install R packages I forgot existed until some code didn’t work. It was obnoxious enough that I wrote a <a href="/code/InstallPackages.R">script to make things faster</a>, and kept a <a href="/data/Packages.csv">csv file of packages</a> (which may or not be necessary at this point, but it’s there and the code uses it so w/e. )</p>
+<pre class="r"><code># Essential R packages
+
+# Read in package list
+# This is my list of essential packages. I probably don&#39;t update it enough... :(
+pkgs &lt;- read.csv(
+  &quot;https://raw.githubusercontent.com/srvanderplas/srvanderplas.github.io/master/Data/Packages.csv&quot;,
+  stringsAsFactors = F, comment.char = &quot;#&quot;)
+
+# Get rid of installr package if on linux
+if (Sys.info()[1] == &quot;Linux&quot;) {
+  pkgs &lt;- subset(pkgs, Name != &quot;installr&quot;)
+}
+
+# Don&#39;t reinstall packages that are already installed
+installed.pkgs &lt;- installed.packages()
+pkgs &lt;- pkgs[!pkgs$Name %in% installed.pkgs,]
+
+# Separate out github packages
+gh &lt;- subset(pkgs, Location == &quot;github&quot;)
+cran &lt;- subset(pkgs, Location == &quot;CRAN&quot;)
+
+# Install cran packages (if any are not already installed)
+if (nrow(cran) &gt; 0) {
+  install.packages(cran$Name, Ncpus = availableCores(),
+                   dependencies = c(&#39;Suggests&#39;, &#39;Depends&#39;, &#39;Imports&#39;, &#39;Enhances&#39;))
+}
+
+
+# Install github packages
+library(devtools)
+
+lapply(sprintf(&quot;%s/%s&quot;, gh$Author, gh$Name),
+       function(.) {
+         try(install_github(.,
+                            dependencies = c(&#39;Suggests&#39;, &#39;Depends&#39;, &#39;Imports&#39;, &#39;Enhances&#39;)))
+       })
+
+# Install other packages
+# Requires perl installation
+install.packages(&quot;WriteXLS&quot;, dependencies = T)
+
+
+# Install handy RStudio extensions
+install_github(c(&quot;daattali/colourpicker&quot;,  # Color picker
+                 &quot;MilesMcBain/mufflr&quot;,  # Pipe shortcuts
+                 &quot;dokato/todor&quot;,  # Package todo management
+                 &quot;daattali/addinslist&quot;,  # List of add-ins
+                 &quot;mdlincoln/docthis&quot;  # Roxygen skeleton for functions
+))</code></pre>

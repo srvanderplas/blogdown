@@ -1,0 +1,22 @@
+---
+title: Install Useful R Packages
+author: Susan Vanderplas
+date: '2016-04-11'
+slug: install-useful-r-packages
+categories:
+  - R
+tags:
+  - useful-code
+  - computer-setup
+image:
+  caption: ''
+  focal_point: ''
+---
+
+About once a semester, I end up having to install or reinstall R because of a software issue, OS upgrade, or some other calamity. It's calmed down in the past year or two, but it used to be much more frequent. During grad school, I was screwing things up on such a regular basis that I could reinstall Ubuntu, get LaTeX and R installed, and repopulate all of the important programs I used faster than I could usually fix the issue I caused initially (and for the most part, I was doing this without docker or any of the convenient tools we have now for automatically setting up environments). 
+
+For a week or two after a new installation, though, I'd be constantly having to install R packages I forgot existed until some code didn't work. It was obnoxious enough that I wrote a [script to make things faster](/code/InstallPackages.R), and kept a [csv file of packages](/data/Packages.csv) (which may or not be necessary at this point, but it's there and the code uses it so w/e. )
+
+```{r, code = readLines(here::here('static/code/InstallPackages.R')), eval = F}
+
+```

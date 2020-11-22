@@ -1,0 +1,97 @@
+---
+title: 'Fun Data'
+author: Susan Vanderplas
+date: '2019-11-11'
+slug: []
+draft: true
+categories:
+  - R
+  - Graphics
+tags:
+  - data
+  - fun
+image:
+  caption: ''
+  focal_point: ''
+---
+
+This is mostly an exploration of the different data sets available in the data-is-plural archive, to play around and see what they might be used for.
+
+```{r, echo = F, message = F}
+library(tidyverse)
+library(lubridate)
+knitr::opts_chunk$set(message = F, warning = F, error = T)
+```
+
+## Nuclear Explosions
+```{r, cache = T}
+
+nukes <- read_csv("https://raw.githubusercontent.com/data-is-plural/nuclear-explosions/master/data/oklahoma-catalog-explosions.csv") 
+
+nukes <- nukes %>%
+  mutate(date = parse_date_time2(as.character(date), "%y%m%d", cutoff_2000 = 44)) %>%
+  mutate(yield = parse_number(explosive_yield))
+
+nukes %>%
+  # filter(testing_party == "US") %>%
+  ggplot(aes(x = date, y = as.numeric(yield))) +
+  geom_point() + 
+  coord_cartesian(ylim = c(0, 1000)) + 
+  facet_wrap(~testing_party)
+
+```
+
+## Breweries
+
+```{r}
+library(readxl)
+library(historydata) # devtools::install_github("ropensci/historydata")
+data("us_state_populations")
+
+beer <- tempfile(fileext = ".xls")
+download.file("https://www.ttb.gov/images/pdfs/foia_count-by-state/q3_brewery_count_by_state_1984_september2019.xls", destfile = beer)
+brewery <- read_xls(beer, skip = 7, n_max = 53) %>%
+  rename(State = ...1) %>%
+  filter(State != "STATE") %>%
+  mutate_at(vars(matches("\\d{4}")), ~str_replace(., "\\*", "0")) %>%
+  mutate_at(vars(matches("\\d{4}")), as.numeric) %>%
+  select(State, matches("^\\d{4}")) %>%
+  pivot_longer(-1, names_to = "year", names_ptypes = list(year = integer()), values_to = "breweries") %>%
+  filter(!is.na(breweries))
+
+wine <- tempfile(fileext = ".xlsx")
+download.file("https://www.ttb.gov/images/pdfs/foia_count-by-state/q3-bonded-wine-producers-by-state-1999-june-2019.xlsx", destfile = wine)
+
+winery <- read_xlsx(wine, skip = 8, n_max = 53) %>%
+  rename(State = ...1) %>%
+  filter(State != "STATE") %>%
+  mutate_at(vars(matches("\\d{4}")), ~str_replace(., "\\*", "0")) %>%
+  mutate_at(vars(matches("\\d{4}")), as.numeric) %>%
+  select(State, matches("^\\d{4}")) %>%
+  pivot_longer(-1, names_to = "year", names_ptypes = list(year = integer()), values_to = "wineries") %>%
+  filter(!is.na(wineries))
+
+
+ggplot(brewery, aes(x = year, y = breweries, group = State)) + geom_line()
+ggplot(winery, aes(x = year, y = wineries, group = State)) + geom_line()
+
+
+alc_prod <- full_join(brewery, winery)
+alc_prod <- us_state_populations %>% 
+  left_join(tibble(state = c(state.name, "District Of Columbia"), 
+                   State = c(state.abb, "DC"))) %>%
+  rename(census_year = year) %>% 
+  right_join(
+    alc_prod %>%
+      mutate(census_year = floor(year/10)*10)
+  ) %>%
+  mutate(beer_per_100k = breweries/(population/100000),
+         wine_per_100k = wineries/(population/100000)) 
+
+
+alc_prod %>%
+  ggplot(aes(x = year, y = beer_per_100k, group = State)) + geom_line()
+
+alc_prod %>%
+  ggplot(aes(x = year, y = wine_per_100k, group = State)) + geom_line()
+```

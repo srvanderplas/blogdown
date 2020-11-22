@@ -1,0 +1,76 @@
+---
+title: RGL + Rmarkdown Tricks
+author: Susan Vanderplas
+date: '2019-05-22'
+categories:
+  - R
+tags:
+  - note-to-self
+  - useful-code
+image:
+  caption: ''
+  focal_point: ''
+---
+
+
+Basic setup - requires `x3ptools` and `rgl` packages
+```{r setup}
+library(x3ptools)
+library(rgl)
+logo <- read_x3p(system.file(package = "x3ptools", "csafe-logo.x3p"))
+
+rgl::setupKnitr()
+```
+
+## Changing viewing angle
+
+You can interactively get the viewing angle by using `rgl::par3d()$userMatrix`
+
+For example, if I use `image_x3p(logo)` to show the CSAFE logo, and then I rotate the object a bit, I can use
+
+```{r, eval = F}
+# Not run...
+um <- rgl::par3d()$userMatrix
+dput(um)
+```
+
+to save the rotation matrix for reproducibility. I can then set it using `view3d(userMatrix = um)`
+
+
+## RGL and Rmarkdown (static)
+
+- chunk option: rgl = TRUE
+- chunk option: dev = png
+
+Allows you to use RGL and generate a static image automatically. The chunk header looks like this^[
+Note: Get verbatim chunks using [this post](https://yihui.name/en/2017/11/knitr-verbatim-code-chunk/)]:
+````
+```{r, rgl = TRUE, dev = 'png'}`r ''`
+## Chunk code goes here
+```
+````
+
+```{r, eval = T, rgl = TRUE, dev = 'png', fig.width = 8, fig.height = 4, out.width = "100%"}
+um <- structure(c(0.990302324295044, -0.108039885759354, -0.0873337239027023, 
+                  0, 0.119859784841537, 0.982302069664001, 0.143926605582237, 0, 
+                  0.0702383369207382, -0.152998745441437, 0.985726416110992, 0, 
+                  0, 0, 0, 1), .Dim = c(4L, 4L)) # from dput()
+image_x3p(logo)
+rgl::view3d(userMatrix = um)
+
+scene <- rgl::scene3d() # save the scene to an R object
+```
+
+
+[Stackoverflow post](https://stackoverflow.com/questions/53892177/how-to-embed-an-rgl-snapshot-in-rmarkdown-package-vignette)
+
+## RGL and Rmarkdown (dynamic)
+
+To get RGL embedded in RMarkdown (warning, this will make your HTML files extremely large...), use `rgl::rglwidget()` 
+```{r plot-dynamic, fig.width = 8, fig.height = 4, out.width = "100%"}
+# How to plot:
+scene %>%
+  rglwidget()
+```
+
+- [RGL/WebGL vignette](https://cran.r-project.org/web/packages/rgl/vignettes/WebGL.html)

@@ -1,0 +1,21 @@
+---
+title: 'Animint: Interactive Web-Based Animations Using Ggplot2''s Grammar of Graphics'
+author: Susan Vanderplas
+date: '2015-08-10'
+slug: animint-jsm2015
+all_day: true
+event: 'Joint Statistical Meetings, Seattle, WA'
+categories:
+  - Graphics
+tags:
+  - graphics
+  - interactive
+  - r-package
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<iframe src="https://srvanderplas.github.io/Presentations/JSM2015/Animint.html#/" height="600px" width = "100%"/>
+ 
+

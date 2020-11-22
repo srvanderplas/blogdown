@@ -1,0 +1,21 @@
+---
+title: A Bayesian Approach to Visual Inference
+author: Susan Vanderplas
+date: '2017-08-02'
+slug: bayesian-vinference-jsm2017
+all_day: true
+event: 'Joint Statistical Meetings, Baltimore, MD'
+categories:
+  - Graphics
+tags:
+  - bayes
+  - visual-inference
+  - user-study
+  - graphics
+image:
+  caption: ''
+  focal_point: ''
+---
+
+<iframe src="https://srvanderplas.github.io/Presentations/JSM2017/BayesianLineup.html#/" height="600px" width = "100%"/>
+ 

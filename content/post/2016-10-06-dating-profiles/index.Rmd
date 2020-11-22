@@ -1,0 +1,69 @@
+---
+title: Dating Profiles
+author: Susan Vanderplas
+date: '2016-10-06'
+slug: dating-profiles
+categories:
+  - R
+tags:
+  - data
+  - graphics
+  - fun
+image:
+  caption: ''
+  focal_point: ''
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F, error = F)
+
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+data <- read.csv(here::here("static/data/DatingProfiles.csv"))
+data$Height.Orig <- data$Height
+data$Height <- data$Height %>%
+  str_extract("\\d{0,1}\\.\\d{0,2}m") %>%
+  str_replace_all("m", "") %>%
+  as.numeric()
+
+data$Height <- data$Height * 3.28084 # Meters -> Feet
+
+data <- filter(data, !is.na(Height))
+```
+
+# Height by Gender
+
+34456 unique profiles were collected from a dating site using a "decoy profile" of a dog who is interested in any type of relationship with just about anyone. Of those profiles, `r nrow(data)` contained self-reported height. As women are on average shorter than men, the distributions for each gender are shown separately. 
+
+```{r height-by-gender, fig.width = 8, fig.height = 4}
+ggplot(data = data, aes(x = Height, fill = gender)) + 
+scale_x_continuous("Height (ft)", limits = c(4, 7)) + 
+scale_y_continuous("# Profiles") + 
+geom_histogram(binwidth = .1, color = "black") + 
+facet_wrap(~gender, scales = "free")
+```
+
+As people typically report height in feet and inches, at least in the US, using bins of 0.1 feet doesn't quite work out as we'd hope. Switching to 1/12 of a foot, or every 1", seems like a more natural bin width. 
+```{r height-by-gender2, fig.width = 8, fig.height = 4}
+ggplot(data = data, aes(x = Height, fill = gender)) + 
+scale_x_continuous("Height (ft)", limits = c(4, 7)) + 
+scale_y_continuous("# Profiles") + 
+geom_histogram(binwidth = 1/12, color = "black") + 
+facet_wrap(~gender, scales = "free")
+```
+
+Using bins of 1", we can see a tendency that is particularly pronounced in men (but also present in women) to round to the nearest 6" - in men, this is most pronounced at 6', and in women, at 5'4". It also seems that there are fewer than expected women reporting heights of 6'1" - they either round down to 6' or up to 6'2". Overall, the heights appear normally distributed, but these slight deviations are somewhat entertaining, even if we are not testing for statistical significance. 
+
+
+```{r height-by-gender3, fig.width = 8, fig.height = 4}
+ggplot(data = data, aes(x = Height, fill = gender)) + 
+scale_x_continuous("Height (ft)", limits = c(4, 7)) + 
+scale_y_continuous("# Profiles") + 
+geom_density(adjust = 1.25, color = "black") + 
+facet_wrap(~gender, scales = "free")
+```
+Using a reasonable kernel, we see that rounding behavior is more pronounced in men than in women (though there are more men reporting a height at all, so that also plays into it). 

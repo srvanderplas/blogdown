@@ -1,0 +1,25 @@
+---
+title: Self-Contained Images in Xaringan
+author: Susan Vanderplas
+date: '2020-03-05'
+slug: []
+categories:
+  - R
+tags:
+  - fun
+  - r-package
+image:
+  caption: ''
+  focal_point: ''
+---
+
+
+[Pull request link](https://github.com/yihui/xaringan/pull/207)
+
+[Rmd file](/post/2020-03-05-self-contained-images-in-xaringan/xaringan-mwe.Rmd)
+
+[MWE compiled with xaringan_0.15.1](/post/2020-03-05-self-contained-images-in-xaringan/xaringan-mwe-prev.html)
+
+[MWE compiled with updated code](/post/2020-03-05-self-contained-images-in-xaringan/xaringan-mwe.html)
+
+[diff between the html files](/post/2020-03-05-self-contained-images-in-xaringan/xaringan-html-diff.txt)

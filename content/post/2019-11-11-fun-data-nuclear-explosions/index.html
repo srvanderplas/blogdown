@@ -1,0 +1,90 @@
+---
+title: 'Fun Data'
+author: Susan Vanderplas
+date: '2019-11-11'
+slug: []
+draft: true
+categories:
+  - R
+  - Graphics
+tags:
+  - data
+  - fun
+image:
+  caption: ''
+  focal_point: ''
+---
+
+
+
+<p>This is mostly an exploration of the different data sets available in the data-is-plural archive, to play around and see what they might be used for.</p>
+<div id="nuclear-explosions" class="section level2">
+<h2>Nuclear Explosions</h2>
+<pre class="r"><code>nukes &lt;- read_csv(&quot;https://raw.githubusercontent.com/data-is-plural/nuclear-explosions/master/data/oklahoma-catalog-explosions.csv&quot;) 
+
+nukes &lt;- nukes %&gt;%
+  mutate(date = parse_date_time2(as.character(date), &quot;%y%m%d&quot;, cutoff_2000 = 44)) %&gt;%
+  mutate(yield = parse_number(explosive_yield))
+
+nukes %&gt;%
+  # filter(testing_party == &quot;US&quot;) %&gt;%
+  ggplot(aes(x = date, y = as.numeric(yield))) +
+  geom_point() + 
+  coord_cartesian(ylim = c(0, 1000)) + 
+  facet_wrap(~testing_party)</code></pre>
+<p><img src="/post/2019-11-11-fun-data-nuclear-explosions/index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="breweries" class="section level2">
+<h2>Breweries</h2>
+<pre class="r"><code>library(readxl)
+library(historydata) # devtools::install_github(&quot;ropensci/historydata&quot;)
+data(&quot;us_state_populations&quot;)
+
+beer &lt;- tempfile(fileext = &quot;.xls&quot;)
+download.file(&quot;https://www.ttb.gov/images/pdfs/foia_count-by-state/q3_brewery_count_by_state_1984_september2019.xls&quot;, destfile = beer)
+brewery &lt;- read_xls(beer, skip = 7, n_max = 53) %&gt;%
+  rename(State = ...1) %&gt;%
+  filter(State != &quot;STATE&quot;) %&gt;%
+  mutate_at(vars(matches(&quot;\\d{4}&quot;)), ~str_replace(., &quot;\\*&quot;, &quot;0&quot;)) %&gt;%
+  mutate_at(vars(matches(&quot;\\d{4}&quot;)), as.numeric) %&gt;%
+  select(State, matches(&quot;^\\d{4}&quot;)) %&gt;%
+  pivot_longer(-1, names_to = &quot;year&quot;, names_ptypes = list(year = integer()), values_to = &quot;breweries&quot;) %&gt;%
+  filter(!is.na(breweries))
+
+wine &lt;- tempfile(fileext = &quot;.xlsx&quot;)
+download.file(&quot;https://www.ttb.gov/images/pdfs/foia_count-by-state/q3-bonded-wine-producers-by-state-1999-june-2019.xlsx&quot;, destfile = wine)
+
+winery &lt;- read_xlsx(wine, skip = 8, n_max = 53) %&gt;%
+  rename(State = ...1) %&gt;%
+  filter(State != &quot;STATE&quot;) %&gt;%
+  mutate_at(vars(matches(&quot;\\d{4}&quot;)), ~str_replace(., &quot;\\*&quot;, &quot;0&quot;)) %&gt;%
+  mutate_at(vars(matches(&quot;\\d{4}&quot;)), as.numeric) %&gt;%
+  select(State, matches(&quot;^\\d{4}&quot;)) %&gt;%
+  pivot_longer(-1, names_to = &quot;year&quot;, names_ptypes = list(year = integer()), values_to = &quot;wineries&quot;) %&gt;%
+  filter(!is.na(wineries))
+
+
+ggplot(brewery, aes(x = year, y = breweries, group = State)) + geom_line()</code></pre>
+<p><img src="/post/2019-11-11-fun-data-nuclear-explosions/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(winery, aes(x = year, y = wineries, group = State)) + geom_line()</code></pre>
+<p><img src="/post/2019-11-11-fun-data-nuclear-explosions/index_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>alc_prod &lt;- full_join(brewery, winery)
+alc_prod &lt;- us_state_populations %&gt;% 
+  left_join(tibble(state = c(state.name, &quot;District Of Columbia&quot;), 
+                   State = c(state.abb, &quot;DC&quot;))) %&gt;%
+  rename(census_year = year) %&gt;% 
+  right_join(
+    alc_prod %&gt;%
+      mutate(census_year = floor(year/10)*10)
+  ) %&gt;%
+  mutate(beer_per_100k = breweries/(population/100000),
+         wine_per_100k = wineries/(population/100000)) 
+
+
+alc_prod %&gt;%
+  ggplot(aes(x = year, y = beer_per_100k, group = State)) + geom_line()</code></pre>
+<p><img src="/post/2019-11-11-fun-data-nuclear-explosions/index_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<pre class="r"><code>alc_prod %&gt;%
+  ggplot(aes(x = year, y = wine_per_100k, group = State)) + geom_line()</code></pre>
+<p><img src="/post/2019-11-11-fun-data-nuclear-explosions/index_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+</div>

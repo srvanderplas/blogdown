@@ -1,0 +1,22 @@
+---
+title: 'Framed: Reproducing 150 Year Old Charts'
+author: Susan Vanderplas
+date: '2018-08-01'
+all_day: true
+event: 'Joint Statistical Meetings, Vancouver, BC'
+categories:
+  - Graphics 
+tags:
+  - graphics
+  - history
+  - statistical-atlas
+  - user-study 
+slug: framed-reproducing-150-year-old-charts 
+image:
+  caption: '' 
+  focal_point: ''
+output: html_document
+---
+
+<iframe src="https://srvanderplas.github.io/Presentations/JSM2018/Framed.html#1" height="600px" width = "100%"/>
+ 

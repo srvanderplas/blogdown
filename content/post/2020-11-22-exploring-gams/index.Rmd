@@ -1,0 +1,85 @@
+---
+title: Exploring GAMs
+author: Susan Vanderplas
+date: '2020-11-22'
+slug: []
+categories:
+  - R
+tags:
+  - R
+  - new-techniques
+subtitle: ''
+summary: ''
+authors: []
+---
+
+
+```{r setup, message = F, warning = F}
+library(tidyverse)
+library(skimr)
+library(mgcv)
+```
+
+I'm going to start out playing with the nasa data from `ggpcp` - it's spatial in nature and should be well handled by a nonparametric model.
+
+```{r}
+data("nasa", package = "ggpcp")
+```
+
+A basic model might look at the following relationships:
+
+```{r}
+library(mgcv)
+
+ggplot(nasa, aes(x = elevation, y = temperature - 273)) + 
+  geom_point() + 
+  geom_smooth(method = "gam", formula = y ~ s(x), se = T) + 
+  ylab("Temperature (deg C)") + xlab("Elevation (m)")
+
+ggplot(nasa, aes(x = elevation, y = temperature - 273, color = month)) + 
+  geom_jitter() + 
+  geom_smooth(method = mgcv::gam, formula = y ~ s(x), se = F) + 
+  ylab("Temperature (deg C)") + xlab("Elevation (m)")
+
+ggplot(nasa, aes(x = lat, y = temperature - 273)) + 
+  geom_jitter() + 
+  geom_smooth(method = mgcv::gam, formula = y ~ s(x), se = F) + 
+  ylab("Temperature (deg C)") + xlab("Latitude")
+
+ggplot(nasa, aes(x = long, y = temperature - 273)) + 
+  geom_jitter() + 
+  geom_smooth(method = mgcv::gam, formula = y ~ s(x), se = F) + 
+  ylab("Temperature (deg C)") + xlab("Longitude")
+```
+
+So let's fit a basic model - smooth elevation by month, and then add in an interaction tensor between latitude and longitude.
+
+```{r}
+basic_model <- gam(data = nasa, temperature - 273 ~ s(elevation, by = month) + te(lat, long), method = "REML")
+```
+
+We can check diagnostics with `gam.check`:
+
+```{r}
+gam.check(basic_model)
+```
+
+For the most part it looks ok, but most of our k-indexes are <1 and some of the EDF are >8 when k' is 9. So lets see what changes with the gam_check output if we add k=15. No clue what will happen, but that's what makes this interesting.
+
+```{r}
+basic_model2 <- gam(data = nasa, temperature - 273 ~ s(elevation, by = month) + te(lat, long, k = 15, bs = "cs"), method = "REML")
+```
+
+```{r}
+gam.check(basic_model2)
+```
+
+And we can also see what happens when we increase k on the elevation smoother. 
+
+```{r}
+basic_model3 <- gam(data = nasa, temperature - 273 ~ s(elevation, by = month, k=10) + te(lat, long), method = "REML")
+```
+
+```{r}
+gam.check(basic_model3)
+```

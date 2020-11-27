@@ -88,3 +88,24 @@ US Government employees' work during their employment is technically part of the
 
 
 https://arstechnica.com/science/2012/02/science-code-should-be-open-source-according-to-editorial/
+
+
+## Steps toward Reproducible, Open-source Science (Code and Data)
+
+0. Describe the methodology in the published paper, release uncurated code on request
+
+1. Describe the methodology in the published paper, provide reproducible code in a repository and link to it in the paper
+
+2. Describe the methodology in the published paper, provide reproducible code and data in a repository...
+
+3. Archive the code, data, and paper in a curated repository on e.g. figshare
+
+## Steps toward Reproducible, Open-source Science (Code structure)
+
+- Make the code modular, so that each step is encapsulated in a reusable function
+
+- Make a habit of documenting each step in the code explicitly (Documentation-driven development)
+
+- Use unit and integration tests to document each function and record the output (to provide a log of how function results change over time)
+
+- Release your code as a package, with documentation, to make it easier for others to use (and cite) your work
